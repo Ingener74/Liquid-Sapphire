@@ -101,6 +101,7 @@ def user(nickname):
     ]
     return render_template('user.html', user=user, posts=posts)
 
+
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
