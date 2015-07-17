@@ -4,8 +4,9 @@ from datetime import datetime
 from flask import redirect, flash, render_template, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, oid, db, lm
-from forms import LoginForm, EditForm
-from models import User, ROLE_USER
+from forms import LoginForm, EditForm, PostForm
+from models import User, ROLE_USER, Post
+from config import POSTS_PER_PAGE
 
 
 @app.before_request
@@ -22,22 +23,23 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index():
-    user = g.user
-    posts = [
-        {
-            'author': {'nickname': u'Люк'},
-            'body': u'Использование силы'
-        },
-        {
-            'author': {'nickname': u'Лея'},
-            'body': u'Политические вопросы'
-        }
-    ]
-    return render_template('index.html', user=user, posts=posts)
+def index(page = 1):
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, timestamp=datetime.utcnow(), author=g.user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live!')
+        redirect(url_for('index'))
+
+    return render_template('index.html',
+                           user=g.user,
+                           posts=g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False),
+                           form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,17 +95,17 @@ def logout():
 
 
 @app.route('/user/<nickname>')
+@app.route('/user/<nickname>/<int:page>')
 @login_required
-def user(nickname):
+def user(nickname, page=1):
     u = User.query.filter_by(nickname=nickname).first()
 
     if u is None:
         flash('User ' + nickname + ' not found')
         return redirect(url_for('index'))
-    posts = [
-        {'author': u, 'body': 'Test post #1'},
-        {'author': u, 'body': 'Test post #2'}
-    ]
+
+    posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
+
     return render_template('user.html', user=u, posts=posts)
 
 
@@ -173,3 +175,4 @@ def unfollow(nickname):
 
     flash('You have stopped following ' + nickname + '.')
     return redirect(url_for('user', nickname=nickname))
+
