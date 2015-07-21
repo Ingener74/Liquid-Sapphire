@@ -9,11 +9,19 @@ from models import User, ROLE_USER, Post
 from config import POSTS_PER_PAGE, MAX_SEARCH_RESULTS
 from emails import follower_notification
 
-
 """
 susan susanshepard472@yahoo.com
 susan1990
 """
+
+from flask.ext.babel import gettext
+from app import babel
+from config import LANGUAGES
+
+
+@babel.localeselector
+def get_locale():
+    return "ru" # request.accept_languages.best_match(LANGUAGES.keys())
 
 
 @app.before_request
@@ -73,7 +81,7 @@ def login():
 @oid.after_login
 def after_login(resp):
     if resp.email is None or resp.email == "":
-        flash('Invalid login. Please try again')
+        flash(gettext('Invalid login. Please try again.'))
         return redirect(url_for('login'))
 
     user = User.query.filter_by(email=resp.email).first()
@@ -129,7 +137,7 @@ def edit():
         g.user.about_me = form.about_me.data
         db.session.add(g.user)
         db.session.commit()
-        flash('Your changes have been saved.')
+        flash(gettext('Your changes have been saved.'))
 
     else:
         form.nickname.data = g.user.nickname

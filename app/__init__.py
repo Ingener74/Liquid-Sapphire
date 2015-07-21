@@ -24,4 +24,7 @@ mail = Mail(app)
 from momentjs import Momentjs
 app.jinja_env.globals['momentjs'] = Momentjs
 
+from flask.ext.babel import Babel
+babel = Babel(app)
+
 from app import views, models

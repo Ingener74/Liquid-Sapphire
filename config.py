@@ -27,3 +27,8 @@ MAIL_USE_SSL = True
 MAIL_USERNAME = 'shnaider.pavel.1986@yandex.ru'
 MAIL_PASSWORD = 'pavel1986'
 ADMINS = ['shnaider.pavel.1986@yandex.ru']
+
+LANGUAGES = {
+    'en': 'English',
+    'ru': 'Russian'
+}

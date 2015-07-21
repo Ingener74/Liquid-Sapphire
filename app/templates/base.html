@@ -21,7 +21,7 @@
             <div class="navbar-inner">
                 <a class="brand" href="/">Микроблог</a>
                 <ul class="nav">
-                    <li><a href="{{ url_for('index') }}">Домой</a></li>
+                    <li><a href="{{ url_for('index') }}"> _('Home') </a></li>
                     {% if g.user.is_authenticated() %}
                         <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Ваш профиль</a></li>
                         <li><a href="{{ url_for('logout') }}">Выход</a></li>

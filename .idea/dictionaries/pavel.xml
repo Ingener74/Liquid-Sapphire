@@ -1,10 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="pavel">
     <words>
+      <w>autoescape</w>
       <w>endblock</w>
       <w>endfor</w>
       <w>endwith</w>
       <w>frmt</w>
+      <w>jinja</w>
       <w>sqlalchemy</w>
     </words>
   </dictionary>
