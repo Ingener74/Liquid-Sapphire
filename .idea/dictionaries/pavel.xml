@@ -4,6 +4,7 @@
       <w>endblock</w>
       <w>endfor</w>
       <w>endwith</w>
+      <w>frmt</w>
       <w>sqlalchemy</w>
     </words>
   </dictionary>
